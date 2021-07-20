@@ -1,0 +1,72 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+    />
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>Object Detector</title>
+  </head>
+  <body>
+    <div class="navbar-fixed">
+      <nav>
+        <div class="nav-wrapper">
+          <a href="/" class="brand-logo center">Detector</a>
+        </div>
+      </nav>
+    </div>
+    <div class="container">
+      <h4 class="center-align">Video Feed</h4>
+      <br />
+      <div class="center-align">
+        <img id="img" src="/static/loader.gif" class="responsive-video" />
+      </div>
+      <div id="additional" class="center-align"></div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+      integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js"
+      integrity="sha512-aMGMvNYu8Ue4G+fHa359jcPb1u+ytAF+P2SCb+PxrjCdO3n3ZTxJ30zuH39rimUggmTwmh2u7wvQsDTHESnmfQ=="
+      crossorigin="anonymous"
+    ></script>
+
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function () {
+        const socket = io.connect(
+          "http://" + document.domain + ":" + location.port,
+          {
+            reconnection: false,
+          }
+        );
+
+        socket.io.on("error", (error) => {
+          console.error(`${error}`);
+        });
+
+        const image_element = document.getElementById("img");
+        const additional_element = document.getElementById("additional");
+
+        socket.on("connect", function () {
+          console.log("connected");
+          socket.on("stream", (data) => {
+            console.log(data);
+            image_element.src = data.image;
+            additional_element.innerHTML = `$<h2>${data.data}</h2>`;
+          });
+        });
+        socket.on("disconnect", function () {
+          console.log("disconnected");
+        });
+      });
+    </script>
+  </body>
+</html>
