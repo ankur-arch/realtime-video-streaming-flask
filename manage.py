@@ -11,10 +11,8 @@ background_lock = Lock()
 
 
 app = Flask(__name__)
-
-
 app.config['SECRET_KEY'] = 'vnkdjnfjknfl1232#'
-app = Flask(__name__)
+
 
 
 socketio = SocketIO(
